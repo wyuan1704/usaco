@@ -34,7 +34,7 @@ x, -> (x - mid) -> (2mid - x) == N-x
 */
 void rotate90Degree(vector<vector<bool> > &b) // clockwise
 {
-	double mid = N / 2.0;
+	double mid = (N-1) / 2.0; // N -> N-1
 	for(int x=0; x<mid; x++)
 		for(int y=0; y<=mid; y++)
 		{

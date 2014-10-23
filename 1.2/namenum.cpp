@@ -3,7 +3,7 @@ ID: wyuan171
 PROG: namenum
 LANG: C++11
 */
-
+// 10/23/2014; Instead of store all candidates, use dfs to save memory.
 #include <fstream>
 #include <unordered_set>
 #include <string>
@@ -12,8 +12,29 @@ using namespace std;
 
 class Solution
 {
+	void dfs(const string &digits, string &candi, char map[9-1][3], const int &size, int s)
+	{
+		if(s == size)
+		{
+			if(dict.find(candi) != dict.end())
+			{
+				found = true;
+				fout<< candi <<endl;
+			}
+			return;
+		}
+		int cur = digits[s] - '2';
+		if(cur < 0 || cur > 9-2)
+			return;
+		for(int i=0; i<3; i++)
+		{
+			candi.push_back(map[cur][i]);
+			dfs(digits, candi, map, size, s+1);
+			candi.pop_back();
+		}
+	}
 public:
-	Solution(const char *finName, const char*foutName): fin(finName), fout(foutName)
+	Solution(const char *finName, const char*foutName): fin(finName), fout(foutName), found(false)
 	{
 
 	};
@@ -24,8 +45,7 @@ public:
 		char map[9-1][3] = { 'A','B','C',  'D','E','F',   'G','H','I',
 			'J','K','L', 'M','N','O',   'P','R','S',
 			'T','U','V',  'W','X','Y'};
-		vector<vector<string> > res(2); string emptyStr("");
-		res[0].push_back(emptyStr);
+
 		int size = digits.size();
 
 		ifstream fdict("dict.txt");
@@ -39,41 +59,9 @@ public:
 		}
 		fdict.close();
 
-		for(int i = 0; i < size; i++)
-		{
-			int d = digits[i] - '0';
-			if(d < 2 || d > 9)
-			{
-				fout<<"NONE"<<endl;
-				fout.close();
-				return;
-			}
-			d -= 2;
-			vector<string> &cur = res[i%2];
-			vector<string> &temp = res[(i+1)%2];
-			temp.clear();
-			int curSize = cur.size();
-			for(int j = 0; j < curSize; j++)
-			{
-				for(int k = 0; k < 3; k++)
-				{
-					string str = cur[j];
-					str.push_back(map[d][k]);
-					temp.push_back(str);
-				}
-			}
-		}
+		string candi;
+		dfs(digits, candi, map, size, 0);
 
-		vector<string> &cur = res[(size)%2];
-		bool found = false;
-		for(int i=0; i < cur.size(); i++)
-		{
-			if(dict.find(cur[i]) != dict.end())
-			{
-				found = true;
-				fout<<cur[i]<<endl;
-			}	
-		}
 		if(!found)
 			fout<<"NONE"<<endl;
 
@@ -83,6 +71,7 @@ public:
 private:
 	ifstream fin;
 	ofstream fout;
+	bool found;
 	unordered_set<string> dict;
 };
 

@@ -34,7 +34,7 @@ public:
 	Solution(const char *finName, const char*foutName): fin(finName), fout(foutName){};
 	void main()
 	{
-		// wyuan; 10/23/2014; 
+		// wyuan; 10/23/2014; Like Merge Intervals on leetcode.com. 
 		int N;
 		fin >> N;
 		if(N < 1)
@@ -53,7 +53,7 @@ public:
 		sort(intervals.begin(), intervals.end(), comp);
 
 		Interval cur = intervals[0];
-		int maxOcuSpan = cur.end - cur.start;
+		int maxOcuSpan = cur.end - cur.start; // !!!
 		int maxNonOcuSpan = 0;
 		for(int i=1; i<N; i++)
 		{

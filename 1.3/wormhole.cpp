@@ -9,7 +9,7 @@
 //          (1,4), (2,3)
 // When one pairing is made, check if there's a cycle.
 // When a worm walks out of a wormhole, it will enter the closest wormhole on its right side along the X direction. Then it will walks out of another wormhole. If there's no wormhole on its right side, he will not be trapped.
-// If it can be trapped, it will have a wormhole on its right after N (or N/2??) walks.
+// If it can be trapped, it will have a wormhole on its right after N walks.
 #include <fstream>
 
 using namespace std;
@@ -28,12 +28,12 @@ class Solution
         {
             int pos = i;
             // it walks out of wormholw i
-            for(int j=0; j<N/2; j++)
+            for(int j=0; j<N; j++)
             {
                 pos = pair[ closestRight[pos]];
-                if(pos == 0)
-                    return true;
             }
+            if(pos != 0)
+                return true;
         }
         return false;
     }
@@ -43,7 +43,7 @@ class Solution
         int i; // find the first non-paired wormhole.
         for(i=1; i<=N; i++)
         {
-            if(pair[i] != 0)
+            if(pair[i] == 0)
                 break;
         }
         if( i > N)
@@ -75,6 +75,9 @@ public:
     void main()
     {
         fin >> N;
+        
+        closestRight[0] = 0;
+        pair[0] = 0;
         
         for(int i=1; i<=N; i++)
         {

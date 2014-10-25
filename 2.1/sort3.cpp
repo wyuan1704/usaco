@@ -39,20 +39,40 @@ public:
             }
         }
         int wrongPosCount = 0;
+        int posCount[4][4] = {0}; // posCount[i][j] is the count of j in the i position.
         for(int i=0; i<counts[1]; i++)
+        {
+            posCount[1][vals[i]] ++;
             if(vals[i] != 1)
                 wrongPosCount++;
+        }
         
         for(int i=counts[1]; i<counts[2]; i++)
+        {
+            posCount[2][vals[i]] ++;
             if(vals[i] != 2)
                 wrongPosCount++;
+        }
+
         
         for(int i=counts[2]; i<counts[3]; i++)
+        {
+            posCount[3][vals[i]] ++;
             if(vals[i] != 3)
                 wrongPosCount++;
+        }
+        
+        // These are two types of swaps.
+        // 1) direct swaps -- 1,2    1, 3   2,3  Two wrong position and 1 swap.
+        // 2) cyclic swaps -- 2,3,1 or 3,1,2   Three wrong positions and 2 swaps.
+        // swap
+        int directSwapCounts =
+          min(posCount[1][2], posCount[2][1])
+        + min(posCount[1][3], posCount[3][1])
+        + min(posCount[2][3], posCount[3][2]);
         
         
-        fout << (wrongPosCount+1)/2 << endl;
+        fout << directSwapCounts + (wrongPosCount-2*directSwapCounts)*2/3 << endl;
         fin.close();
         fout.close();
     }

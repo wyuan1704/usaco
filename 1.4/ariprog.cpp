@@ -34,7 +34,9 @@ public:
         {
             for(int i=0; i < size; i++)
             {
-                if(bisquare[i] && (i + len*(N-1) < size))
+                if(i + len*(N-1) >= size)
+                    break;
+                if(bisquare[i])
                 {
                     
                     bool isCandi = true;

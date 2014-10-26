@@ -8,6 +8,7 @@ LANG: C++
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 struct Fraction
@@ -24,6 +25,18 @@ int comp(const Fraction &a, const Fraction &b)
 
 class Solution
 {
+    int isReducedFrac(int n, int d)
+    {
+        if(n == 1)
+            return true;
+        if(d %n == 0)
+            return false;
+        int sqroot = sqrt(n);
+        for(int i=2; i<=sqroot; i++)
+            if(n%i == 0 && (d%i == 0 || d%(n/i) ==0))
+                return false;
+        return true;
+    }
 
 public:
 	Solution(const char *finName, const char*foutName): fin(finName), fout(foutName){};
@@ -31,13 +44,13 @@ public:
 	{
         size_t N;
         fin >> N;
-        //N = 5;
+        //N = 7;
         vector<Fraction> fracs;
         fracs.push_back(Fraction(0, 1));
         for(int i=1; i<N; i++)
             for(int j=i+1; j<=N; j++)
             {
-                if(i == 1 || j%i != 0)
+                if(isReducedFrac(i, j))
                     fracs.push_back(Fraction(i, j));
             }
 		
@@ -48,7 +61,7 @@ public:
         for(int i=0; i < size; i++)
             fout << fracs[i].n << '/' << fracs[i].d << endl;
         
-		fout<<endl;
+		//fout<<endl;
 		fin.close();
 		fout.close();
 	}

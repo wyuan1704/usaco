@@ -5,6 +5,8 @@
  */
 
 // 10/26/2014; Roman integers seem 5-based.
+// For [1~9] * 10^x, preCounts are the same while Roman symbols are different.
+// For [1~9], we need IVX. For 10~90, we need XLC. For 100~900, we need CDM.
 #include <fstream>
 
 using namespace std;
@@ -51,7 +53,10 @@ public:
             countRoman(i, res, preCounts);
         
         for(int i=0; i<7; i++)
-            fout << res[i] << endl;
+        {
+            if(res[i] != 0)
+                fout << roman[i] << " " <<  res[i] << endl;
+        }
         
         fin.close();
         fout.close();

@@ -5,21 +5,27 @@ LANG: C++
 */
 
 #include <fstream>
-
+#include <vector>
 using namespace std;
 
 class Solution
 {
-	void dfs(int &res, int start, const int &end, int &target)
-	{	if(target == 0)
+// vector<int> &resVec is just for debugging.
+	void dfs(int &res, vector<int> &resVec, int start, const int &end, int &target)
+	{	
+		if(target == 0)
+		{	
 			res ++;
-
-		for(int i=start+1; i<=end; i++)
-		{
-			target -= i;
-			dfs(res, i, end, target);
-			target += i;
+			return;
 		}
+
+		if(start >= end || target < 0)
+			return;
+
+		dfs(res, resVec, start+1, end, target);
+		target -= start+1; resVec.push_back(start+1);
+		dfs(res, resVec, start+1, end, target); 
+		target += start+1; resVec.pop_back();
 	}
 public:
 	Solution(const char *finName, const char*foutName): fin(finName), fout(foutName){};
@@ -28,12 +34,13 @@ public:
 		int N = 1;
 		fin >> N;
 		int sum = N *(N+1) / 2;
-		int res = 0;
+		int res = 0; vector<int> resVec;
 		if(sum % 2 == 0)
 		{
-			int target = sum/2;
+			int target = sum/2; 
+			resVec.push_back(1);
 			target -= 1; // Let 1 always be in the subset, then we don't have to divide res by 2.
-			dfs(res, 1, N, target);
+			dfs(res, resVec, 1, N, target);
 		}
 
 		fout << res;

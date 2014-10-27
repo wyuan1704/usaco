@@ -10,37 +10,29 @@ using namespace std;
 
 class Solution
 {
-// vector<int> &resVec is just for debugging.
-	void dfs(int &res, vector<int> &resVec, int start, const int &end, int &target)
-	{	
-		if(target == 0)
-		{	
-			res ++;
-			return;
-		}
 
-		if(start >= end || target < 0)
-			return;
-
-		dfs(res, resVec, start+1, end, target);
-		target -= start+1; resVec.push_back(start+1);
-		dfs(res, resVec, start+1, end, target); 
-		target += start+1; resVec.pop_back();
-	}
 public:
 	Solution(const char *finName, const char*foutName): fin(finName), fout(foutName){};
 	void main()
 	{
-		int N = 1;
+		size_t N = 1;
 		fin >> N;
-		int sum = N *(N+1) / 2;
-		int res = 0; vector<int> resVec;
+		// 10/27/2014; To be fast, use dynamic sourcing.
+		// dp[j] represents the number of sets, which can be made from the set of {1, 2, ..., N}, whose sum is i.
+		// dp[j] = sum(dp[j-i) , i is in [1, N]
+		size_t dp[(1+39)*40/4 + 1] = {0}; // N is in [1,39];
+		dp[0] = 1;
+		size_t sum = N * (N+1) / 2;
+		size_t res = 0;
 		if(sum % 2 == 0)
 		{
-			int target = sum/2; 
-			resVec.push_back(1);
-			target -= 1; // Let 1 always be in the subset, then we don't have to divide res by 2.
-			dfs(res, resVec, 1, N, target);
+			sum /=2;
+			for (size_t i=1;i<=N;i++)
+			{
+				for (size_t j=sum; j>=i; j--)
+					dp[j] = dp[j] + dp[j-i];
+			}
+			res = dp[sum] / 2;
 		}
 
 		fout << res;

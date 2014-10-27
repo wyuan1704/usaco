@@ -3,44 +3,39 @@ ID: wyuan171
 PROG: runround
 LANG: C++
 */
-
+#include <algorithm>
 #include <fstream>
-#include <string>
-#include <sstream>
-#include <cstring>
+#include <vector>
 using namespace std;
 
 class Solution
 {
 	bool isRunaround(size_t num)
 	{
-		string numStr("");
-		std::stringstream lSStream;
-		lSStream << num;
-		lSStream >> numStr;
-
-		memset(visited, false, sizeof(visited)/sizeof(bool));
-		size_t size = numStr.size();
-		for(size_t i=0; i<size; i++)
+		numVec.clear();
+		bool map[10] = {false};
+		// No digit is Zero. No digit is repeated.
+		while(num > 0)
 		{
-			int cur = numStr[i] - '0';
-			if(visited[cur])
+			int cur = num%10;
+			if(cur == 0 || map[cur])
 				return false;
-			visited[cur] = true;
+			map[cur] = true;
+			numVec.push_back(cur);
+			num /= 10;
 		}
-		if(visited[0])
-			return false;
-		size_t count = size;
-		int index = 0;
-		while(count-- > 0)
-		{
-			int cur = numStr[index] - '0'; 
-			if(cur == 0)
-				return false; 
-			numStr[index] = '0';
-			//visited[cur] = false;
-			index += cur;
-			index %= size;
+		// Go around
+		size_t size = numVec.size(); 
+		reverse(numVec.begin(), numVec.end());
+		int index = 0; int cur= index;
+		for(size_t i=0; i<size; i++)
+		{  
+			cur = index;
+			if(numVec[cur] == 0)
+				return false;
+			index = (index + numVec[cur]) % size;
+
+			numVec[cur] = 0;
 		}
 		return index == 0;
 	}
@@ -65,7 +60,7 @@ public:
 private:
 	ifstream fin;
 	ofstream fout;
-	bool visited[10];
+	vector<int> numVec;
 };
 
 int main()

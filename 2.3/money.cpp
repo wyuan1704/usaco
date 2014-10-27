@@ -15,7 +15,7 @@ class Solution
 {
     unsigned long long combinationSum(vector<int> &candidates, const int &target) {
         
-        sort(candidates.begin(), candidates.end());
+        sort(candidates.begin(), candidates.end(), greater<int>());
         unsigned long long res=0;
     
         helper(res, candidates, 0, 0, target);
@@ -27,11 +27,11 @@ class Solution
         {
             int cur = candidates[i] + curSum;
             if(cur > target)
-                return;
+                continue;
             else if(cur == target)
             {
                 res++;
-                return;
+                continue;
             }
             else
             {

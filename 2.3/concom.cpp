@@ -15,15 +15,15 @@ class Solution
 		if(controls[i][j])
 			return;
 		controls[i][j] = true;
-		// i controls j now. Add j's owership to i.
-		for(int owned=0; i<owned; owned++)
+		// i controls j now. Add j's ownership to i.
+		for(int owned=0; owned<101; owned++)
 			owns[i][owned]  +=  owns[j][owned];
 		// If one controls i, it controls j too.
 		for(int owner=0; owner<101; owner++)
 			if(controls[owner][i])
 				addController(owner, j);
 		// If i controls more company, mark it.
-		for(int owned=0; i<owned; owned++)
+		for(int owned=0; owned<101; owned++)
 			if(owns[i][owned] > 50)
 				addController(i, owned);
 	}
@@ -31,7 +31,7 @@ class Solution
 	void addOwnership(const int &i, const int &j, const int &portion)
 	{
 		for(int owner=0; owner<101; owner++)
-			if(controls[owner][i])
+			if(controls[owner][i])  // If one control i (including i itself), add portion to it.
 				owns[owner][j] += portion; // According to condition 3. Portion is the same for the owner's owner, which may not be right in the right world.
 		for(int owner=0; owner<101; owner++)
 			if(owns[owner][j] > 50)

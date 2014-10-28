@@ -3,7 +3,7 @@ ID: wyuan171
 PROG: fracdec
 LANG: C++
 */
-
+// 10/28/2014; Keep the remainders in map. When we meet a same remainder, it begin repeating. To do, make it concise.
 #include <fstream>
 #include <string>
 using namespace std;
@@ -13,7 +13,14 @@ class Solution
 	void fracToDecimal(int N, int D)
 	{
 		int integer = N/D;
+		int lenth = (integer==0)?1:0;
 		fout << integer << ".";
+		while(integer > 0)
+		{
+			lenth++;
+			integer /= 10;
+		}
+		lenth++; // '.'
 		int repeat = 0;
 		bool map[100000+1] = {false};
 
@@ -35,15 +42,23 @@ class Solution
 		while(count-- > 0)
 		{
 			if(repeat == curN)
+			{
 				fout << "(";
+				lenth++;
+				if(lenth % 76 == 0)
+				fout << endl;
+			}
 			curN *= 10;
 			fout << curN/D;
+			lenth++;
 			curN  %= D;
+			if(lenth % 76 == 0)
+				fout << endl;
 		}
+		if(lenth % 76 == 0)
+				fout << endl;
 		if(repeat != 0)
 			fout << ')';
-
-
 		fout<<endl;
 	}
 public:

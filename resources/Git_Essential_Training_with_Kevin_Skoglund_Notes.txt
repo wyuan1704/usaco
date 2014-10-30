@@ -1,0 +1,181 @@
+I've finished "Git Essential Training with Kevin Skoglund" on lynda.com. Today I will review it and write down useful commands as a memo.
+
+Git auto-completion on Unix-like Systems.
+	cd ~
+	curl -OL https://github.com/git/git/raw/master/contrib/completion/git-completion.bash // Or just search "git completion" on github
+	mv ~/git-completion.bash ~/.git-completion.bash
+	Load it in ~/.bash_profile or ~/.bashrc
+		if [ -f ~/.git-completion.bash ]; then  // You can't omit all the spaces
+			source ~/.git-completion.bash
+		fi
+
+Three-trees architecture
+	work -- stage -- repository
+
+git diff --cached
+git diff --staged
+
+git rm
+git mv
+
+Undoing Changes
+	git checkout [branch, files]
+	git checkout -- [files] // -- means to stay on the same branch, in case that a branch has the same name with the file.
+	git reset HEAD <file>...
+	git commit --amend ... // amend the last commit.
+	git checkout SHA -- file // Retrieving old versions.
+	git reset HEAD // Reverting a commit
+	git revert SHA // Reverting a commit
+	git reset // Using reset to undo commits
+		--soft 	
+			does not change staging index or working directory
+		--mixed (default)
+			changes staging index to match repository
+			does not change working directory
+		--hard
+			changes staging index and working directory to match reposito
+	git clean -n(just display)// Removing untracked files
+	git clean -f // Danger! delete untracked files
+	
+Using .gitignore files
+	git config --global core.excludesfile [~/.gitignore_global or any other file] // globally ignoring files
+	git rm --cached a_tracked_file // ignore tracked files
+	Git is designed to be a file-tracking system.
+	
+Navigating the Commit Tree
+	tree-ish
+		full SHA-1 hash
+		short SHA-1 hash
+			- at least 4 characters
+			- unambiguous (8-10 characters)
+		HEAD pointer
+		branch reference, tag reference?
+		ancestry
+			parent commit
+				HEAD^, ab43643432432^, master^
+				HEAD~1, HEAD~
+			gradparent commit
+				HEAD^^
+				HEAD~2
+	git ls-tree tree-ish
+	
+	Getting more from the commit log
+		git log --oneline
+		git log --since="2014-10-20" --after --until=3.days // or "3 days ago"
+		--author="wyuan1704"  --grep="temp"
+		git log SHA1..[SHA2] tree-ish
+		git log -p
+		git log --stat --summary
+		git log --format==oneline  // gives the full SHA
+		
+		git log --graph --oneline --all --decorate
+		
+		git show SHA
+	
+	Compare commits
+		git diff --cached
+		
+Branching
+	overview
+		branches are cheap
+			try new ideas
+			isolate features or sections of work
+		one working directory
+		fast context switching
+	Viewing and creating branches
+		git branch branchName
+		git checkout branchName
+			git checkout -b branchName
+	Switching branches with uncommitted changes
+		commit first or stash
+	Renaming branches
+		git branch -m oldBranch newBranch
+	Deleting branches
+		git branch -d branchName
+		// Danger!! -D force to delete
+	Configuring the command prompt to show the branch
+		__git_ps1 is defined in ~/.git-completion.bash
+		Add one line below into .bash_profile 
+			export PS1='\W$(__git_ps1 "(%s)") > '
+
+Merging
+	git merge newBranch // merge newBranch to current branch
+	
+	Merging conflicts
+		git merge --abort // abort merge
+		resolve the conflicts manually
+			git add ..
+			git commit // git will gives you commit comments for merging.
+		use a merge tool
+	Strategies to reduce conflicts
+		keep lines short
+		keep commits small and focused
+		beware stray edits to white-space
+			spaces, tabs, line returns.
+		merge often
+		track changes to master!!!
+
+Staging Changes
+	git stash save "comments"
+	git stash list 
+	git stash show stash@{num}
+	git stash show -p stash@(num)
+	
+	Retrieving stashed changes
+		No matter what branch you are on.
+		git stash pop [stash@{num}]// apply and pop it out. // stash@{0} by default.
+		git stash apply
+	Deleting stashed changes
+		git stash drop stash@{num}
+
+Remote
+		git remote add origin URL
+		git push -u origin master
+	Creating a remote branch
+		create it on Github
+		git push -u origin master 
+			-u
+			--set-upstream
+				For every branch that is up to date or successfully pushed, add upstream (tracking) reference
+	Cloning a remote repository
+		git clone URL [folderName]
+	Tracking remote branches
+		-u / --set-upstream
+		git config branch.BranchName.merge ...
+		git config branch.BranchName.remote ...
+	Pushing changes to a remote repository
+		If it's a tracking branch (-u), we just need "git push"
+	Fetching changes from a remote repository
+		git fetch [origin] // sync with remote
+	Merging in fetched changes
+		like normal merging
+		git pull = git fetch + git merge
+	Checking out remote branches
+		We can't check out remote branches as the local branches. Instead
+			git branch branchName origin/branchNameRemote.
+		Then Branch branchName set up to track remote branch branchNameRemote
+	Pushing to an updated remote branch
+	Delete a remote branch
+		git push origin :branch_to_delete
+		// explain
+			git push origin localBranch:remoteBranch // means push localBranch to remoteBranch in origon
+			if we omit localBranch, we push NULL to remoteBranch, which is to delete it.
+	
+	Enabling collaboration
+	
+Tools and Next Steps
+	Setting up aliases for common commands
+		git config --global alias.st status
+		or git config --global alias.st "status"
+	Using SSH keys for remote login
+		https://help.github.com/articles/caching-your-github-password-in-git/
+	Exploring integrated development environments.
+	Exploring graphical user interfaces
+		GitWeb GitX	GitHub	SourceTree	Tower	SmartGit GitBox
+		https://git.wiki.kernel.org/index.php/InterfacesFrontendsAndTools
+	Understanding Git Hosting
+		Git hosting companies
+			Github	Bitbucket	Gitorious
+		Git Self-Hosting
+			Gitosis	 http://github.com/tv42/gitosis
+			Gitolite	http://github.com/sitaramc/gitolite
